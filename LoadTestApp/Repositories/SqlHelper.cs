@@ -33,6 +33,8 @@ namespace LoadTestApp.Repositories
             var data = new DataTable();
             adapter.Fill(data);
 
+            connection.Close();
+
             return data;
 
         }
