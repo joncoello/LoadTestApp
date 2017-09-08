@@ -39,5 +39,23 @@ namespace LoadTestApp.Repositories
 
         }
 
+        public void RunScript(string script, params SqlParameter[] parameters)
+        {
+            // connection
+            var connectionString = ConfigurationManager.ConnectionStrings[_connectionName].ConnectionString;
+            var connection = new SqlConnection(connectionString);
+            connection.Open();
+
+            // command
+            var command = new SqlCommand(script, connection);
+
+            command.Parameters.AddRange(parameters);
+
+            command.ExecuteNonQuery();
+
+            connection.Close();
+            
+        }
+
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Web;
@@ -51,6 +52,12 @@ namespace LoadTestApp.Repositories
 
         }
 
-
+        internal void CreatePerson(Person newPerson)
+        {
+            _sqlHelper.RunScript("insert into person values(@FirstName, @LastName)",
+                new SqlParameter("@FirstName", newPerson.FirstName),
+                new SqlParameter("@LastName", newPerson.LastName)
+                );
+        }
     }
 }

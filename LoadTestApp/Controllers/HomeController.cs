@@ -37,5 +37,28 @@ namespace LoadTestApp.Controllers
 
             return View(people);
         }
+        
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Create(Models.Person newPerson)
+        {
+            if (ModelState.IsValid)
+            {
+                var repo = new Repositories.PersonRepository();
+                repo.CreatePerson(newPerson);
+
+                return RedirectToAction("People");
+            }
+            else
+            {
+                return View(newPerson);
+            }
+            
+        }
+
     }
 }
