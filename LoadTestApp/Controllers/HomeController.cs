@@ -59,6 +59,15 @@ namespace LoadTestApp.Controllers
             }
             
         }
+        
+        public ActionResult Delete(int id)
+        {
+
+            var repo = new Repositories.PersonRepository();
+            repo.DeletePerson(id);
+
+            return RedirectToAction("People");
+        }
 
     }
 }

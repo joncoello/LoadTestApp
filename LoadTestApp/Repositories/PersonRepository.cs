@@ -52,6 +52,13 @@ namespace LoadTestApp.Repositories
 
         }
 
+        internal void DeletePerson(int id)
+        {
+            _sqlHelper.RunScript("delete from person where personid = @PersonID",
+               new SqlParameter("@PersonID", id)
+               );
+        }
+
         internal void CreatePerson(Person newPerson)
         {
             _sqlHelper.RunScript("insert into person values(@FirstName, @LastName)",
