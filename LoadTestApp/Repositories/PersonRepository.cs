@@ -18,7 +18,8 @@ namespace LoadTestApp.Repositories
             _sqlHelper = new SqlHelper("DefaultConnection");
         }
 
-        public List<Person> GetPeople() {
+        public List<Person> GetPeople()
+        {
 
             //Thread.Sleep(2000);
 
@@ -46,7 +47,8 @@ namespace LoadTestApp.Repositories
                 LoadTestApp.PerfCounters.PerformanceCounterLocator.Instance.PersonRepositoryError.RecordOperation();
                 throw;
             }
-            finally {
+            finally
+            {
                 LoadTestApp.PerfCounters.PerformanceCounterLocator.Instance.GetPeople.RecordOperation(DateTime.Now.Ticks - startTicks);
             }
 
@@ -57,6 +59,33 @@ namespace LoadTestApp.Repositories
             _sqlHelper.RunScript("delete from person where personid = @PersonID",
                new SqlParameter("@PersonID", id)
                );
+        }
+
+        internal Person GetPerson(int id)
+        {
+
+            var data = _sqlHelper.RunScriptReturnDt("select personid, firstname, lastname from person where PersonID = @PersonID",
+                new SqlParameter("@PersonID", id)
+                );
+
+            var row = data.Rows[0];
+
+            var person = new Person();
+            person.PersonID = Convert.ToInt32(row["PersonID"]);
+            person.FirstName = Convert.ToString(row["FirstName"]);
+            person.LastName = Convert.ToString(row["LastName"]);
+
+            return person;
+
+        }
+
+        internal void UpdatePerson(Person person)
+        {
+            _sqlHelper.RunScript("update person set firstname = @FirstName, lastname = @LastName where PersonID = @PersonID",
+                new SqlParameter("@PersonID", person.PersonID),
+                new SqlParameter("@FirstName", person.FirstName),
+                new SqlParameter("@LastName", person.LastName)
+                );
         }
 
         internal void CreatePerson(Person newPerson)

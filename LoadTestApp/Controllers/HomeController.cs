@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LoadTestApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -65,6 +66,25 @@ namespace LoadTestApp.Controllers
 
             var repo = new Repositories.PersonRepository();
             repo.DeletePerson(id);
+
+            return RedirectToAction("People");
+        }
+
+        public ActionResult Edit(int id)
+        {
+
+            var repo = new Repositories.PersonRepository();
+            var person = repo.GetPerson(id);
+
+            return View(person);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Person person)
+        {
+
+            var repo = new Repositories.PersonRepository();
+            repo.UpdatePerson(person);
 
             return RedirectToAction("People");
         }

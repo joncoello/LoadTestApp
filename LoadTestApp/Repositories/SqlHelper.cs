@@ -17,7 +17,7 @@ namespace LoadTestApp.Repositories
             this._connectionName = connectionName;
         }
 
-        public DataTable RunScriptReturnDt(string script)
+        public DataTable RunScriptReturnDt(string script, params SqlParameter[] parameters)
         {
             // connection
             var connectionString = ConfigurationManager.ConnectionStrings[_connectionName].ConnectionString;
@@ -26,6 +26,8 @@ namespace LoadTestApp.Repositories
 
             // command
             var command = new SqlCommand(script, connection);
+
+            command.Parameters.AddRange(parameters);
 
             // adapter
             var adapter = new SqlDataAdapter(command);
