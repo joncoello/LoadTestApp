@@ -17,12 +17,16 @@ namespace LoadTestApp.PerfCounters
         {
             GetPeople = new PerformanceMonitorOperation(
                 CategoryName, "Get People");
-            
+
+            CreatePerson = new PerformanceMonitorOperation(
+                CategoryName, "Create Person");
+
             PersonRepositoryError = new PerformanceMonitorOperation(
                 CategoryName, "Person Repository Error");
         }
 
         public PerformanceMonitorOperation GetPeople { get; private set; }
+        public PerformanceMonitorOperation CreatePerson { get; private set; }
         public PerformanceMonitorOperation PersonRepositoryError { get; private set; }
 
         private static PerformanceCounterLocator m_Instance;
@@ -50,6 +54,7 @@ namespace LoadTestApp.PerfCounters
             var countersToCreate = new CounterCreationDataCollection();
 
             GetPeople.RegisterCountersForCreation(countersToCreate);
+            CreatePerson.RegisterCountersForCreation(countersToCreate);
             PersonRepositoryError.RegisterCountersForCreation(countersToCreate);
 
             PerformanceCounterCategory.Create(

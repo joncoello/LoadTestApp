@@ -52,7 +52,7 @@ namespace LoadTestApp.Controllers
                 var repo = new Repositories.PersonRepository();
                 repo.CreatePerson(newPerson);
 
-                return RedirectToAction("People");
+                return RedirectToAction("Details", new { id = newPerson.PersonID });
             }
             else
             {
@@ -86,7 +86,16 @@ namespace LoadTestApp.Controllers
             var repo = new Repositories.PersonRepository();
             repo.UpdatePerson(person);
 
-            return RedirectToAction("People");
+            return RedirectToAction("Details", new { id = person.PersonID });
+        }
+
+        public ActionResult Details(int id)
+        {
+
+            var repo = new Repositories.PersonRepository();
+            var person = repo.GetPerson(id);
+
+            return View(person);
         }
 
     }

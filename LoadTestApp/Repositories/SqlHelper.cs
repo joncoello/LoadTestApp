@@ -19,25 +19,25 @@ namespace LoadTestApp.Repositories
 
         public DataTable RunScriptReturnDt(string script, params SqlParameter[] parameters)
         {
-            // connection
-            var connectionString = ConfigurationManager.ConnectionStrings[_connectionName].ConnectionString;
-            var connection = new SqlConnection(connectionString);
-            connection.Open();
+                // connection
+                var connectionString = ConfigurationManager.ConnectionStrings[_connectionName].ConnectionString;
+                var connection = new SqlConnection(connectionString);
+                connection.Open();
 
-            // command
-            var command = new SqlCommand(script, connection);
+                // command
+                var command = new SqlCommand(script, connection);
 
-            command.Parameters.AddRange(parameters);
+                command.Parameters.AddRange(parameters);
 
-            // adapter
-            var adapter = new SqlDataAdapter(command);
+                // adapter
+                var adapter = new SqlDataAdapter(command);
 
-            var data = new DataTable();
-            adapter.Fill(data);
+                var data = new DataTable();
+                adapter.Fill(data);
 
-            connection.Close();
+                connection.Close();
 
-            return data;
+                return data;
 
         }
 

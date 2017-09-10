@@ -1,6 +1,7 @@
 ﻿using LoadTestApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -29,7 +30,23 @@ namespace LoadTestApp.Repositories
             {
                 var people = new List<Person>();
 
-                var data = _sqlHelper.RunScriptReturnDt("select personid, firstname, lastname from person");
+                //var data = _sqlHelper.RunScriptReturnDt("select personid, firstname, lastname from person");
+
+                var script = "select personid, firstname, lastname from person";
+
+                // connection
+                var connectionString = @"Data Source=ACCESS-1303SF2\SQL2014;Initial Catalog=LoadTestApp;User ID=sa;PWD=Patrick@1;Max Pool Size=50";
+                var connection = new SqlConnection(connectionString);
+                connection.Open();
+
+                // command
+                var command = new SqlCommand(script, connection);
+
+                // adapter
+                var adapter = new SqlDataAdapter(command);
+
+                var data = new DataTable();
+                adapter.Fill(data);
 
                 foreach (DataRow row in data.Rows)
                 {
@@ -90,10 +107,31 @@ namespace LoadTestApp.Repositories
 
         internal void CreatePerson(Person newPerson)
         {
-            _sqlHelper.RunScript("insert into person values(@FirstName, @LastName)",
-                new SqlParameter("@FirstName", newPerson.FirstName),
-                new SqlParameter("@LastName", newPerson.LastName)
-                );
+
+            //Thread.Sleep(1100);
+
+            var startTicks = DateTime.Now.Ticks;
+
+            try
+            {
+
+                newPerson.PersonID =
+                    Convert.ToInt32(
+                        _sqlHelper.RunScriptReturnDt("insert into person values(@FirstName, @LastName) select SCOPE_IDENTITY()",
+                        new SqlParameter("@FirstName", newPerson.FirstName),
+                        new SqlParameter("@LastName", newPerson.LastName)
+                ).Rows[0][0]);
+
+            }
+            catch (Exception)
+            {
+                LoadTestApp.PerfCounters.PerformanceCounterLocator.Instance.PersonRepositoryError.RecordOperation();
+                throw;
+            }
+            finally
+            {
+                LoadTestApp.PerfCounters.PerformanceCounterLocator.Instance.CreatePerson.RecordOperation(DateTime.Now.Ticks - startTicks);
+            }
         }
     }
 }
